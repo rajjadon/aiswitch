@@ -4,6 +4,11 @@
   "description": "Switch between Claude + ChatGPT Enterprise accounts from VS Code",
   "version": "1.0.0",
   "publisher": "raj",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rajjadon/aiswitch.git"
+  },
   "engines": { "vscode": "^1.85.0" },
   "categories": ["Other"],
   "activationEvents": ["onStartupFinished"],

@@ -191,3 +191,9 @@ All config lives in `~/.aiswitch/`:
 
 With 2× $400/month Claude Enterprise plans + unlimited ChatGPT Enterprise,
 you effectively never hit a wall mid-session.
+
+---
+
+## License
+
+[MIT](LICENSE) © 2026 Raj Jadon
