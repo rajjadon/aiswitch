@@ -188,3 +188,9 @@ All config lives in `~/.aiswitch/`:
 3. When token bar hits yellow → `aiswitch switch claude-acct2` (or click status bar)
 4. When both Claude accounts are low → `aiswitch switch chatgpt-ent`
 5. Next day → both Claude accounts reset → switch back
+
+---
+
+## License
+
+[MIT](LICENSE) © 2026 Raj Jadon

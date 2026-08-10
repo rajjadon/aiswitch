@@ -2,6 +2,12 @@
   "name": "aiswitch",
   "version": "1.0.0",
   "description": "Multi-account AI session switcher for Claude Code + ChatGPT Enterprise",
+  "license": "MIT",
+  "author": "Raj Jadon",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rajjadon/aiswitch.git"
+  },
   "bin": {
     "aiswitch": "./bin/aiswitch.js"
   },
