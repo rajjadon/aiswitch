@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# VS Code extension build output
+*.vsix
+vscode-ext/out/
+vscode-ext/dist/
+vscode-ext/.vscode-test/
+
+# Test / coverage output
+coverage/
+.nyc_output/
+
+# Secrets and local env
+.env
+.env.*
+!.env.example
+
+# Claude Code — local-only settings and scratch worktrees
+.claude/settings.local.json
+.claude/worktrees/
+
+# OS / editor cruft
+.DS_Store
+._*
+Thumbs.db
+*.swp
+.idea/
