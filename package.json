@@ -1,0 +1,20 @@
+{
+  "name": "aiswitch",
+  "version": "1.0.0",
+  "description": "Multi-account AI session switcher for Claude Code + ChatGPT Enterprise",
+  "bin": {
+    "aiswitch": "./bin/aiswitch.js"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node bin/aiswitch.js",
+    "monitor": "node bin/aiswitch.js monitor"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "chokidar": "^3.6.0",
+    "cli-table3": "^0.6.5",
+    "node-notifier": "^10.0.1",
+    "ora": "^8.0.1"
+  }
+}

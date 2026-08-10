@@ -1,0 +1,62 @@
+{
+  "name": "aiswitch",
+  "displayName": "aiswitch",
+  "description": "Switch between Claude + ChatGPT Enterprise accounts from VS Code",
+  "version": "1.0.0",
+  "publisher": "raj",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aiswitch.switchProfile",
+        "title": "aiswitch: Switch AI Profile"
+      },
+      {
+        "command": "aiswitch.addProfile",
+        "title": "aiswitch: Add Profile"
+      },
+      {
+        "command": "aiswitch.showStatus",
+        "title": "aiswitch: Show Status"
+      },
+      {
+        "command": "aiswitch.startMonitor",
+        "title": "aiswitch: Start Usage Monitor"
+      },
+      {
+        "command": "aiswitch.openBrowser",
+        "title": "aiswitch: Open Active Account in Browser"
+      }
+    ],
+    "configuration": {
+      "title": "aiswitch",
+      "properties": {
+        "aiswitch.alertThresholds": {
+          "type": "array",
+          "default": [70, 85, 95],
+          "description": "Context usage % levels to alert at"
+        },
+        "aiswitch.autoMonitor": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically start token usage monitor when VS Code opens"
+        },
+        "aiswitch.showTokenBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show token usage bar in status bar"
+        }
+      }
+    },
+    "menus": {
+      "commandPalette": [
+        { "command": "aiswitch.switchProfile" },
+        { "command": "aiswitch.showStatus" },
+        { "command": "aiswitch.startMonitor" }
+      ]
+    }
+  }
+}
