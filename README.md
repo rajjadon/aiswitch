@@ -209,11 +209,32 @@ it's never copied into a profile dir.
 
 ---
 
-## Development
+## Testing it before you trust it with your real accounts
 
 ```bash
 npm test
 ```
+
+Covers the two guarantees that matter most: switching accounts never forks
+or deletes your global `~/.claude` settings, and the VS Code token indicator
+actually receives updates. Everything runs against a fake `$HOME` — no real
+files are touched.
+
+---
+
+## Uninstall
+
+```bash
+./uninstall.sh
+```
+
+Removes the aiswitch CLI, the VS Code extension, and `~/.aiswitch/` (the
+profile registry and every saved per-account session). Asks for
+confirmation first, since that deletes saved account history.
+
+`~/.claude/` is never touched by uninstall — your global `settings.json`,
+`CLAUDE.md`, hooks, commands, agents, and skills, plus whichever account is
+currently active, are left exactly as they were.
 
 ---
 
