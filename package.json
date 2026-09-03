@@ -14,7 +14,8 @@
   "type": "module",
   "scripts": {
     "start": "node bin/aiswitch.js",
-    "monitor": "node bin/aiswitch.js monitor"
+    "monitor": "node bin/aiswitch.js monitor",
+    "test": "node --test test/"
   },
   "dependencies": {
     "chalk": "^5.3.0",

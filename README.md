@@ -23,15 +23,25 @@ monitors token usage, and alerts you before you hit limits.
 
 ## How Claude account switching works
 
-Claude Code stores its auth session in `~/.claude/`. aiswitch maintains a
-separate config directory per account under `~/.aiswitch/profiles/<name>/`.
+Claude Code stores its auth session, chat/context history, and global
+settings all in `~/.claude/`. aiswitch maintains a separate config directory
+per account under `~/.aiswitch/profiles/<name>/`, but splits `~/.claude/`
+into two kinds of state:
+
+- **Per-account** — auth, session, chat/context history. This is what
+  actually gets swapped.
+- **Global** — `settings.json`, `settings.local.json`, `CLAUDE.md`, `hooks/`,
+  `commands/`, `agents/`, `skills/`. Shared by every account; a switch never
+  copies, overwrites, or deletes it.
 
 When you switch:
-1. Current `~/.claude/` is synced back to the active profile's dir
-2. The new profile's dir is copied to `~/.claude/`
-3. Claude Code picks up the new session automatically
+1. Current per-account state is synced back to the active profile's dir
+2. The new profile's per-account state is copied into `~/.claude/`
+3. Claude Code picks up the new session automatically — global config stays
+   untouched the whole time
 
-No logout/login needed — each account's session is preserved.
+No logout/login needed — each account's session is preserved, and your
+global settings/instructions apply identically to every account.
 
 ---
 
@@ -151,7 +161,10 @@ Run standalone in a terminal pane:
 aiswitch monitor
 ```
 
-Or let the VS Code extension auto-start it (enabled by default).
+Or let the VS Code extension auto-start it (enabled by default). The
+extension instead runs `aiswitch monitor --json`, which emits one
+newline-delimited JSON event (`usage` / `threshold` / `limit-hit`) per line
+instead of the progress bar above — not meant for interactive use.
 
 ---
 
@@ -164,10 +177,15 @@ All config lives in `~/.aiswitch/`:
   profiles.json      # profile registry
   active.json        # currently active profile
   profiles/
-    claude-acct1/    # copy of ~/.claude for this account
+    claude-acct1/    # this account's per-account state (auth/session/chat)
     claude-acct2/
     chatgpt-ent/     # (empty — ChatGPT is browser-only)
 ```
+
+Profile dirs hold only per-account state — auth, session, chat/context
+history. Global config (`settings.json`, `CLAUDE.md`, `hooks/`, `commands/`,
+`agents/`, `skills/`) always stays in `~/.claude/`, shared by every account;
+it's never copied into a profile dir.
 
 ---
 
@@ -188,6 +206,14 @@ All config lives in `~/.aiswitch/`:
 3. When token bar hits yellow → `aiswitch switch claude-acct2` (or click status bar)
 4. When both Claude accounts are low → `aiswitch switch chatgpt-ent`
 5. Next day → both Claude accounts reset → switch back
+
+---
+
+## Development
+
+```bash
+npm test
+```
 
 ---
 

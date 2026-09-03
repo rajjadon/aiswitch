@@ -258,23 +258,31 @@ async function cmdRemove(name) {
 }
 
 async function cmdMonitor() {
-  const c = await chalk();
+  const jsonMode = args.includes('--json');
+  const c = jsonMode ? null : await chalk();
   const active = loadActive();
 
   if (!active.active) {
+    if (jsonMode) process.exit(1);
     console.log(c.yellow('\n  No active profile. Switch to one first.\n'));
     process.exit(1);
   }
 
-  const profile = getProfile(active.active);
-  console.log(c.bold(`\n  Monitoring: ${active.active} (${profile?.email || ''})`));
-  console.log(c.dim('  Watching Claude Code session for token usage...'));
-  console.log(c.dim('  Press Ctrl+C to stop\n'));
+  if (!jsonMode) {
+    const profile = getProfile(active.active);
+    console.log(c.bold(`\n  Monitoring: ${active.active} (${profile?.email || ''})`));
+    console.log(c.dim('  Watching Claude Code session for token usage...'));
+    console.log(c.dim('  Press Ctrl+C to stop\n'));
+  }
 
   const monitor = new UsageMonitor({ thresholds: [70, 85, 95] });
 
   monitor.on('usage', ({ session, daily }) => {
     const pct = Math.round((session / 200_000) * 100);
+    if (jsonMode) {
+      process.stdout.write(JSON.stringify({ type: 'usage', percent: pct, session, daily }) + '\n');
+      return;
+    }
     const bar = progressBar(pct, 30);
     process.stdout.write(
       `\r  Context: ${bar} ${c.bold(`${pct}%`)}  (${session.toLocaleString()} tokens)  `
@@ -284,28 +292,38 @@ async function cmdMonitor() {
   monitor.on('threshold', async ({ percent, threshold }) => {
     const msg = `${active.active}: ${percent}% context used`;
     const urgency = threshold >= 95 ? 'critical' : 'normal';
-    console.log(`\n\n  ${c.yellow('⚠')} ${c.bold(msg)}`);
-    if (threshold >= 85) {
-      console.log(c.dim(`  Consider switching: aiswitch switch <other-account>`));
+    if (jsonMode) {
+      process.stdout.write(JSON.stringify({ type: 'threshold', percent, threshold }) + '\n');
+    } else {
+      console.log(`\n\n  ${c.yellow('⚠')} ${c.bold(msg)}`);
+      if (threshold >= 85) {
+        console.log(c.dim(`  Consider switching: aiswitch switch <other-account>`));
+      }
     }
     await notify('aiswitch — Token Alert', msg, urgency);
   });
 
   monitor.on('limit-hit', async ({ text }) => {
-    console.log(`\n\n  ${c.red('✗')} ${c.bold('Token/rate limit hit!')}`);
-    console.log(c.dim(`  Run: aiswitch switch <other-account>`));
+    if (jsonMode) {
+      process.stdout.write(JSON.stringify({ type: 'limit-hit', text }) + '\n');
+    } else {
+      console.log(`\n\n  ${c.red('✗')} ${c.bold('Token/rate limit hit!')}`);
+      console.log(c.dim(`  Run: aiswitch switch <other-account>`));
+    }
     await notify('aiswitch — Limit Hit!', `${active.active} hit a limit. Switch now!`, 'critical');
   });
 
   monitor.start();
 
-  // Show initial status line
-  console.log(c.dim('  Waiting for Claude Code activity...\n'));
+  if (!jsonMode) {
+    // Show initial status line
+    console.log(c.dim('  Waiting for Claude Code activity...\n'));
+  }
 
   // Keep alive
   process.on('SIGINT', () => {
     monitor.stop();
-    console.log(c.dim('\n\n  Monitor stopped.\n'));
+    if (!jsonMode) console.log(c.dim('\n\n  Monitor stopped.\n'));
     process.exit(0);
   });
 }
